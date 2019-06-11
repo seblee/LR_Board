@@ -1,6 +1,6 @@
 #include "board.h"
 #include "stm32f10x.h"
-#include "sys.h" 
+#include "sys.h"
 #include "usart.h"
 #include "gpio.h"
 #include "timer.h"
@@ -9,24 +9,24 @@
 #include "dma.h"
 /**
 	****************************************************************************
-	* @Warning ±¾³ÌĞòÎ´¾­×÷ÕßĞí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾ 
+	* @Warning æœ¬ç¨‹åºæœªç»ä½œè€…è®¸å¯ï¼Œä¸å¾—ç”¨äºå…¶å®ƒä»»ä½•ç”¨é€” 
 	* @File    board.c
 	* @Author  xiaowine@cee0.com
-	* @date    ĞŞ¸ÄÈÕÆÚ:
+	* @date    ä¿®æ”¹æ—¥æœŸ:
 	* @version V1.0
 	*************************************************
-	* @brief   ¼ì²âIO×´Ì¬ ½ÓÊÕ´®¿ÚÊı¾İ
+	* @brief   æ£€æµ‹IOçŠ¶æ€ æ¥æ”¶ä¸²å£æ•°æ®
 	****************************************************************************
 	* @attention 
 	* Powered By Xiaowine
-	* <h2><center>&copy;  Copyright(C) Ğ¡¾ÆÂÛÌ³ 2015-2019</center></h2>
+	* <h2><center>&copy;  Copyright(C) å°é…’è®ºå› 2015-2019</center></h2>
 	* All rights reserved
 	* 
 **/
 
-/*************	±¾µØ±äÁ¿ÉùÃ÷	**************/
+/*************	æœ¬åœ°å˜é‡å£°æ˜	**************/
 PWM_CHK_STR Para_Da;
-void (*Para_FUN)(PWM_CHK_STR *,u8);
+void (*Para_FUN)(PWM_CHK_STR *, u8);
 uFLAG BOARD_Flag = {0x00};
 u16 Count_Board = 0;
 /**
@@ -36,51 +36,52 @@ u16 Count_Board = 0;
  * @brief 		: 	
  * @param 		: 	
  * @Return  	:		None
- * @Ëµ	Ã÷  	:		
+ * @è¯´	æ˜  	:		
 ************************************************************************************************************************
 */
 void Board_init(void)
 {
-	/**************************************/
-	GPIO_init();
-/********adcÄ£ÄâÁ¿******************/
-	Adc_Init();
-	MYDMA_CH1_Config(DMA1_Channel1,(u32)&ADC1->DR,(u32)&value,M*N);
-	ADC_SoftwareStartConvCmd(ADC1,ENABLE);
-	DMA_Cmd(DMA1_Channel1, ENABLE);	
-/********adcÄ£ÄâÁ¿******************/
-	Para_FUN = PARA_REC;
-	Proce_U1 = Process_Para;
+    /**************************************/
+    GPIO_init();
+    /********adcæ¨¡æ‹Ÿé‡******************/
+    Adc_Init();
+    MYDMA_CH1_Config(DMA1_Channel1, (u32)&ADC1->DR, (u32)&value, M * N);
+    ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+    DMA_Cmd(DMA1_Channel1, ENABLE);
+    /********adcæ¨¡æ‹Ÿé‡******************/
+    Para_FUN = PARA_REC;
+    Proce_U1 = Process_Para;
 }
 /**
 ************************************************************************************************************************
  * @Function 	:		void Board_Scan(void)
  * @author		: 	xiaowine@cee0.com
- * @brief 		: 	board É¨Ãè
+ * @brief 		: 	board æ‰«æ
  * @param 		: 	
  * @Return  	:		None
- * @Ëµ	Ã÷  	:		
+ * @è¯´	æ˜  	:		
 ************************************************************************************************************************
 */
 void Board_Scan(void)
 {
-	u16 temp1,temp2;
-	if(Para_Da.number == 3)
-	{
-		Count_Board = 0;
-		BOARD_Flag.Bits.bit0 = 1;
-		Dead_MCU_CTR_ON; 
-		temp1 = ((Para_Da.RData1<<8)|Para_Da.RData2)&0X0FFF;
-		SYS_Flag.SEND_flag = 1;
-//		temp2 = IO_States(&BOARD_Flag)&0X0FFF;
-		temp2 = AD_States(&BOARD_Flag)&0X0FFF;
-		if(temp1 == temp2)
-			BOARD_Flag.Bits.bit1 = 1;
-		else 
-			BOARD_Flag.Bits.bit1 = 0;
-		Para_Da.number = 0;
-		Para_Board(USART1,temp2);
-	}
+    u16 temp1, temp2;
+    if (Para_Da.number == 3)
+    {
+        Count_Board = 0;
+        BOARD_Flag.Bits.bit0 = 1;
+        Dead_MCU_CTR_ON;
+        temp1 = ((Para_Da.RData1 << 8) | Para_Da.RData2) & 0X0FFF;
+        SYS_Flag.SEND_flag = 1;
+        //		temp2 = IO_States(&BOARD_Flag)&0X0FFF;
+        temp2 = AD_States(&BOARD_Flag) & 0X0FFF;
+        //		if(Chennel_Compare())
+        if (temp1 == temp2)
+            BOARD_Flag.Bits.bit1 = 1;
+        else
+            BOARD_Flag.Bits.bit1 = 0;
+        Para_Da.number = 0;
+        Para_Board(USART1, temp2);
+    }
 }
 /**
 ************************************************************************************************************************
@@ -89,25 +90,24 @@ void Board_Scan(void)
  * @brief 		: 	
  * @param 		: 	
  * @Return  	:		None
- * @Ëµ	Ã÷  	:		
+ * @è¯´	æ˜  	:		
 ************************************************************************************************************************
 */
 u16 AD_States(uFLAG *temp1)
 {
-	u16 temp = 0;
-	u8 i;
-	for(i = 0;i < 12;i++)
-	{
-		if(aftervalue[i] > AD_min_Limit)
-			temp |= 1<<i;
-	}
-	if(temp == 0)
-		temp1->Bits.bit2 = 0;
-	else temp1->Bits.bit2 = 1;
-	return temp;
+    u16 temp = 0;
+    u8 i;
+    for (i = 0; i < 12; i++)
+    {
+        if (aftervalue[i] > AD_min_Limit)
+            temp |= 1 << i;
+    }
+    if (temp == 0)
+        temp1->Bits.bit2 = 0;
+    else
+        temp1->Bits.bit2 = 1;
+    return temp;
 }
-
-
 
 /**
 ************************************************************************************************************************
@@ -116,12 +116,12 @@ u16 AD_States(uFLAG *temp1)
  * @brief 		: 	
  * @param 		: 	
  * @Return  	:		None
- * @Ëµ	Ã÷  	:		
+ * @è¯´	æ˜  	:		
 ************************************************************************************************************************
 */
 void Process_Para(u8 temp)
 {
-	(*Para_FUN)(&Para_Da,temp);
+    (*Para_FUN)(&Para_Da, temp);
 }
 
 /**
@@ -131,28 +131,29 @@ void Process_Para(u8 temp)
  * @brief 		: 	
  * @param 		: 	
  * @Return  	:		None
- * @Ëµ	Ã÷  	:		½ÓÊÕÊı¾İ 57 DH	DL
+ * @è¯´	æ˜  	:		æ¥æ”¶æ•°æ® 57 DH	DL
 ************************************************************************************************************************
 */
-void PARA_REC(PWM_CHK_STR *temp,u8 temp1)
+void PARA_REC(PWM_CHK_STR *temp, u8 temp1)
 {
-	if((temp->number == 0)&&(temp1 == 0x57))
-	{
-		temp->number++;
-		temp->RData0 = temp1;
-	}
-	else if(temp->number == 1)
-	{
-		temp->number++;
-		temp->RData1 = temp1;
-	}
-	else if(temp->number == 2)
-	{
-		temp->number++;
-		temp->RData2 = temp1;
-	}
-	else temp->number = 0;
-	Board_Scan();
+    if ((temp->number == 0) && (temp1 == 0x57))
+    {
+        temp->number++;
+        temp->RData0 = temp1;
+    }
+    else if (temp->number == 1)
+    {
+        temp->number++;
+        temp->RData1 = temp1;
+    }
+    else if (temp->number == 2)
+    {
+        temp->number++;
+        temp->RData2 = temp1;
+    }
+    else
+        temp->number = 0;
+    Board_Scan();
 }
 /**
 ************************************************************************************************************************
@@ -161,32 +162,47 @@ void PARA_REC(PWM_CHK_STR *temp,u8 temp1)
  * @brief 		: 	
  * @param 		: 	
  * @Return  	:		None
- * @Ëµ	Ã÷  	:		
+ * @è¯´	æ˜  	:		
 ************************************************************************************************************************
 */
-void Para_Board(USART_TypeDef* USARTx,u16 temp)
+void Para_Board(USART_TypeDef *USARTx, u16 temp)
 {
-	/*	ÓÉÈí¼şĞòÁĞÇå³ı¸ÃÎ»(ÏÈ¶ÁUSART_SR£¬È»ºóĞ´ÈëUSART_DR)¡£
-	ÔòÄÜ¹»±£Ö¤Ê×¸öÊı¾İ·¢ËÍÊ±£¬²»³öÏÖ¸²¸ÇµÄÇé¿ö
+    /*	ç”±è½¯ä»¶åºåˆ—æ¸…é™¤è¯¥ä½(å…ˆè¯»USART_SRï¼Œç„¶åå†™å…¥USART_DR)ã€‚
+	åˆ™èƒ½å¤Ÿä¿è¯é¦–ä¸ªæ•°æ®å‘é€æ—¶ï¼Œä¸å‡ºç°è¦†ç›–çš„æƒ…å†µ
 	http://www.openedv.com/posts/list/14573.htm
-	ÏÂÃæÖ´ĞĞÆäÖĞÒ»¸ö¾ÍĞĞ
+	ä¸‹é¢æ‰§è¡Œå…¶ä¸­ä¸€ä¸ªå°±è¡Œ
 	*/
-	USART_ClearFlag(USARTx,USART_FLAG_TC);
-//	USART_GetFlagStatus(USART1, USART_FLAG_TC);
-	/**************************/
-	USART_SendData(USARTx, 0x7a);//Ïò´®¿Úx·¢ËÍÊı¾İ
-	while(USART_GetFlagStatus(USARTx,USART_FLAG_TC)!=SET);//µÈ´ı·¢ËÍ½áÊø
-	USART_SendData(USARTx, (u8)(temp>>8));//Ïò´®¿Úx·¢ËÍÊı¾İ
-	while(USART_GetFlagStatus(USARTx,USART_FLAG_TC)!=SET);//µÈ´ı·¢ËÍ½áÊø
-	USART_SendData(USARTx,(u8)(temp&0xff));//Ïò´®¿Úx·¢ËÍÊı¾İ
-	while(USART_GetFlagStatus(USARTx,USART_FLAG_TC)!=SET);//µÈ´ı·¢ËÍ½áÊø
+    USART_ClearFlag(USARTx, USART_FLAG_TC);
+    //	USART_GetFlagStatus(USART1, USART_FLAG_TC);
+    /**************************/
+    USART_SendData(USARTx, 0x7a); //å‘ä¸²å£xå‘é€æ•°æ®
+    while (USART_GetFlagStatus(USARTx, USART_FLAG_TC) != SET)
+        ;                                    //ç­‰å¾…å‘é€ç»“æŸ
+    USART_SendData(USARTx, (u8)(temp >> 8)); //å‘ä¸²å£xå‘é€æ•°æ®
+    while (USART_GetFlagStatus(USARTx, USART_FLAG_TC) != SET)
+        ;                                      //ç­‰å¾…å‘é€ç»“æŸ
+    USART_SendData(USARTx, (u8)(temp & 0xff)); //å‘ä¸²å£xå‘é€æ•°æ®
+    while (USART_GetFlagStatus(USARTx, USART_FLAG_TC) != SET)
+        ; //ç­‰å¾…å‘é€ç»“æŸ
 }
-
-
-
-
-
-
-
-
-
+/**
+************************************************************************************************************************
+ * @Function 	:		u8 Chennel_Compare(u16 temp_in,u16 temp_out)
+ * @author		: 	xiaowine@cee0.com
+ * @brief 		: 	
+ * @param 		: 	temp_in 	æ§åˆ¶
+									temp_out	è¾“å‡º
+ * @Return  	:		1 æ— é”™è¯¯è¾“å‡º 0 æœ‰é”™è¯¯è¾“å‡º
+ * @?ï¿½?ï¿½			:		
+************************************************************************************************************************
+*/
+u8 Chennel_Compare(u16 temp_in, u16 temp_out)
+{
+    u8 i;
+    for (i = 0; i < 12; i++)
+    {
+        if ((temp_out & (1 << i)) > (temp_in & (1 << i)))
+            return 0;
+    }
+    return 1;
+}

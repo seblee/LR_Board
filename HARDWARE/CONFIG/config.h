@@ -1,200 +1,164 @@
 #ifndef __CONFIG_H
-#define __CONFIG_H	 
+#define __CONFIG_H
 #include "sys.h"
 /**
 	****************************************************************************
-	* @Warning ±¾³ÌĞòÎ´¾­×÷ÕßĞí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾ 
-	* @File    ÏµÍ³²ÎÊıÎÄ¼ş
+	* @Warning æœ¬ç¨‹åºæœªç»ä½œè€…è®¸å¯ï¼Œä¸å¾—ç”¨äºå…¶å®ƒä»»ä½•ç”¨é€” 
+	* @File    ç³»ç»Ÿå‚æ•°æ–‡ä»¶
 	* @Author  xiaowine@cee0.com
-	* @date    ĞŞ¸ÄÈÕÆÚ:2015Äê3ÔÂ14ÈÕ14:53:30
+	* @date    ä¿®æ”¹æ—¥æœŸ:2015å¹´3æœˆ14æ—¥14:53:30
 	* @version V1.0
 	*************************************************
 	* @brief   -->>include struct files
 	****************************************************************************
 	* @attention 
 	* Powered By Xiaowine
-	* <h2><center>&copy;  Copyright(C) Ğ¡¾ÆÂÛÌ³ 2015-2019</center></h2>
+	* <h2><center>&copy;  Copyright(C) å°é…’è®ºå› 2015-2019</center></h2>
 	* All rights reserved
 	* 
 **/
 
-#define AddrID	((u16)0xa297)
+#define AddrID ((u16)0xa297)
 
+/********æ•°æ® EEPROMåœ°å€******************/
+#define Current_Save_flag 0 //æ•°æ®ä¸ªæ•° 4Ã—Chennel_NUM å­—èŠ‚
+#define Current_ADDR 1      //æ•°æ®ä¸ªæ•° 4Ã—Chennel_NUM å­—èŠ‚
+#define Chennel_NUM 16
 
-
-
-
-/********Êı¾İ EEPROMµØÖ·******************/
-#define Current_Save_flag	0				//Êı¾İ¸öÊı 4¡ÁChennel_NUM ×Ö½Ú
-#define Current_ADDR			1				//Êı¾İ¸öÊı 4¡ÁChennel_NUM ×Ö½Ú
-#define Chennel_NUM				16
-
-#define AddrID_ADDR				68			//4¡ÁChennel_NUM+4 
-/********Ò¡¸ËÊı¾İ½á¹¹Ìå********************/
+#define AddrID_ADDR 68 //4Ã—Chennel_NUM+4
+/********æ‘‡æ†æ•°æ®ç»“æ„ä½“********************/
 typedef struct
 {
-  uint16_t LCC_H;
-  uint16_t LCC_M;
-  uint16_t LCC_M1;
-  uint16_t LCC_L;
-	u8			 flag_bit_H;
-	u8			 flag_bit_M;
-	u8			 flag_bit_M1;
-	u8			 flag_bit_L;
-	float		 LCC_Fp_H;
-	float		 LCC_Fp_L;
-	u8			 LCC_BYTE_DATA;
-}JOYSTICK;
+    uint16_t LCC_H;
+    uint16_t LCC_M;
+    uint16_t LCC_M1;
+    uint16_t LCC_L;
+    u8 flag_bit_H;
+    u8 flag_bit_M;
+    u8 flag_bit_M1;
+    u8 flag_bit_L;
+    float LCC_Fp_H;
+    float LCC_Fp_L;
+    u8 LCC_BYTE_DATA;
+} JOYSTICK;
 
+/**********uint16ä¸å­—ç¬¦æ•°ç»„å…±ç”¨ä½“***************/
+typedef union _UINT16ARR_ {
+    u16 HalfWord;
+    u8 Byte[2];
+} uUINT16ARR, *P_uUINT16ARR;
 
-/**********uint16Óë×Ö·ûÊı×é¹²ÓÃÌå***************/
-typedef	union _UINT16ARR_
-{
-  u16 HalfWord;
-  u8  Byte[2];
-}uUINT16ARR,*P_uUINT16ARR;
-
-/************ÏµÍ³Ê±ÖÓ½á¹¹Ìå***************************/
+/************ç³»ç»Ÿæ—¶é’Ÿç»“æ„ä½“***************************/
 typedef struct
 {
-	u16 Halfword;
-	u16 SENDCLK;
-	u16 RECclk;
-}SYSclkint;
-/************ÏµÍ³Ê±ÖÓ±êÖ¾Î»½á¹¹Ìå***************************/
+    u16 Halfword;
+    u16 SENDCLK;
+    u16 RECclk;
+} SYSclkint;
+/************ç³»ç»Ÿæ—¶é’Ÿæ ‡å¿—ä½ç»“æ„ä½“***************************/
 typedef struct
 {
-	u16 uClk;
-	u16 uFLAG;
-}ClkFg;
+    u16 uClk;
+    u16 uFLAG;
+} ClkFg;
 
-/*****Ê±ÖÓ±êÖ¾Î»**********************************/
+/*****æ—¶é’Ÿæ ‡å¿—ä½**********************************/
 typedef struct
 {
-	u8 Halfword;
-	u8 SEND_flag;
-	u8 REC_flag;
-}SYSFlagint;
+    u8 Halfword;
+    u8 SEND_flag;
+    u8 REC_flag;
+} SYSFlagint;
 
-/********PWM µçÁ÷²ÎÊı½á¹¹Ìå******************/
-typedef struct	
-{
-//	u16 PWM_PPA;
-	u8	Hight_Current;
-	u8	Low_Current;
-	u8	Start_Current;
-	u8	Rang;
-	u8	Medium_H;
-	u8	Medium_L;
-	float Coe_SpeedH;
-	float Coe_SpeedL;
-
-}PWM_Para;
-
-/********LED ²ÎÊı½á¹¹Ìå******************/
-typedef struct	
-{
-	u16 flash_flag;
-	u16	flash_counter;
-}LED_Para;
-
-
-//´úÂë±êÖ¾Î»
-typedef	union _fullflag_
-{
-  u8  BYTE_flag;
-  struct
-  {
-    u8 bit0:1;
-    u8 bit1:1;
-    u8 bit2:1;
-    u8 bit3:1;
-    u8 bit4:1;
-    u8 bit5:1;
-    u8 bit6:1;
-    u8 bit7:1;
-  }Bits;
-}uFLAG,*P_uFLAG;
-
-
-
-/********MODE adjustment½á¹¹Ìå******************/
+/********PWM ç”µæµå‚æ•°ç»“æ„ä½“******************/
 typedef struct
 {
-	u8 	Parameter_Mode;
-	u8 	Mode_IN_Flag;
-	u16	Current_CH;
-	u8	times_10ms;
-	struct
-	{
-		u8 	Clk_flag:1;
-		u8	speed_flag:1;
-		u8  change_flag:1;
-		u8  bit3:1;
-		u8  bit4:1;
-		u8  bit5:1;
-		u8  bit6:1;
-		u8  bit7:1;
-	}bits;
-}Mode_stu;
-/********½ÓÊÕÊı¾İ¼Ä´æÆ÷******************/
+    //	u16 PWM_PPA;
+    u8 Hight_Current;
+    u8 Low_Current;
+    u8 Start_Current;
+    u8 Rang;
+    u8 Medium_H;
+    u8 Medium_L;
+    float Coe_SpeedH;
+    float Coe_SpeedL;
+
+} PWM_Para;
+
+/********LED å‚æ•°ç»“æ„ä½“******************/
 typedef struct
 {
-	u8 RFnumber;
-	u8 RData0;
-	u8 RData1;
-	u8 RData2;
-	u8 RData3;
-	u8 RData4;
-	u8 RData5;
-	u8 RData6;
-	u8 RData7;
-	u8 RData8;
-	u8 RData9;
-	u8 RData10;
-	u8 RData11;
-}Rec_Str;
+    u16 flash_flag;
+    u16 flash_counter;
+} LED_Para;
+
+//ä»£ç æ ‡å¿—ä½
+typedef union _fullflag_ {
+    u8 BYTE_flag;
+    struct
+    {
+        u8 bit0 : 1;
+        u8 bit1 : 1;
+        u8 bit2 : 1;
+        u8 bit3 : 1;
+        u8 bit4 : 1;
+        u8 bit5 : 1;
+        u8 bit6 : 1;
+        u8 bit7 : 1;
+    } Bits;
+} uFLAG, *P_uFLAG;
+
+/********MODE adjustmentç»“æ„ä½“******************/
+typedef struct
+{
+    u8 Parameter_Mode;
+    u8 Mode_IN_Flag;
+    u16 Current_CH;
+    u8 times_10ms;
+    struct
+    {
+        u8 Clk_flag : 1;
+        u8 speed_flag : 1;
+        u8 change_flag : 1;
+        u8 bit3 : 1;
+        u8 bit4 : 1;
+        u8 bit5 : 1;
+        u8 bit6 : 1;
+        u8 bit7 : 1;
+    } bits;
+} Mode_stu;
+/********æ¥æ”¶æ•°æ®å¯„å­˜å™¨******************/
+typedef struct
+{
+    u8 RFnumber;
+    u8 RData0;
+    u8 RData1;
+    u8 RData2;
+    u8 RData3;
+    u8 RData4;
+    u8 RData5;
+    u8 RData6;
+    u8 RData7;
+    u8 RData8;
+    u8 RData9;
+    u8 RData10;
+    u8 RData11;
+} Rec_Str;
 /********PWM_CHK REC_data******************/
 typedef struct
 {
-	u8 times;
-	u8 number;
-	u8 OKSTA;
-	u8 RData0;
-	u8 RData1;
-	u8 RData2;
-	u8 RData3;
-}PWM_CHK_STR;
-/**********Ö¸Ïò PWMÖµµÄÖ¸Õë****************/
+    u8 times;
+    u8 number;
+    u8 OKSTA;
+    u8 RData0;
+    u8 RData1;
+    u8 RData2;
+    u8 RData3;
+} PWM_CHK_STR;
+/**********æŒ‡å‘ PWMå€¼çš„æŒ‡é’ˆ****************/
 typedef struct
 {
-	u8	*Pwm_out;
-}Point_P;
-
-
-
-
-
-
-
-
-
-
-
-
+    u8 *Pwm_out;
+} Point_P;
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-

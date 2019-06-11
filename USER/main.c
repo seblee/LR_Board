@@ -45,48 +45,48 @@ uchar address2 = 0x1b;
 */
 int main(void)
 {
-	delay_init();		  //延时函数初始化
-	NVIC_Configuration(); //设置NVIC中断分组2:2位抢占优先级，2位响应优先级
+    delay_init();         //延时函数初始化
+    NVIC_Configuration(); //设置NVIC中断分组2:2位抢占优先级，2位响应优先级
 
-	//	uart2_init(19200);	 //串口初始化为19200
-	/************串口1*****************************/
-	uart1_init(9600); //串口初始化为9600
+    //	uart2_init(19200);	 //串口初始化为19200
+    /************串口1*****************************/
+    uart1_init(9600); //串口初始化为9600
 
-	// 	MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)SendBuff,(TEXT_LENTH+3)*2);//DMA1通道4,外设为串口1,存储器为SendBuff,长(TEXT_LENTH+2)*100.
-	// 	MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)USART_TX_BUF,TEXT_LENTH);//DMA1通道4,外设为串口1,存储器为SendBuff,长(TEXT_LENTH+2)*100.
-	/********led******************/
-	LED_Init();
-	/*******继电器输出控制*******************/
-	CRT_IO();
-	/**************************************/
-	Timerx_Init(99, 7199); //10Khz的计数频率，计数到100为10ms
-	IWDG_Init(4, 1250);	//与分频数为64,重载值为1250,溢出时间为2s
+    // 	MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)SendBuff,(TEXT_LENTH+3)*2);//DMA1通道4,外设为串口1,存储器为SendBuff,长(TEXT_LENTH+2)*100.
+    // 	MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)USART_TX_BUF,TEXT_LENTH);//DMA1通道4,外设为串口1,存储器为SendBuff,长(TEXT_LENTH+2)*100.
+    /********led******************/
+    LED_Init();
+    /*******继电器输出控制*******************/
+    CRT_IO();
+    /**************************************/
+    Timerx_Init(99, 7199); //10Khz的计数频率，计数到100为10ms
+    IWDG_Init(4, 1250);    //与分频数为64,重载值为1250,溢出时间为2s
 
-	/******************************************/
-	address.Byte[0] = address1;
-	address.Byte[1] = address2;
-	Board_init();
-	SYS_CLK.SENDCLK = 200; //发送频率 ×10ms一次
-	/**********************************************/
-	while (1)
-	{
-		filter(); //得出AD平均值
-		IWDG_Feed();
-		if (SYS_Flag.SEND_flag == 1)
-		{
-			SYS_Flag.SEND_flag = 0;
-		}
-		//		if(SYS_Flag.SEND_flag == 1)
-		//		{
-		//			USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE); //使能串口1的DMA发送
-		//			MYDMA_Enable(DMA1_Channel4);//开始一次DMA传输！
-		//			USART1_DAM_DONE = 0;
-		//			SYS_Flag.SEND_flag = 0;
-		//		}
-		//		if(DMA_GetFlagStatus(DMA1_FLAG_TC4)!=RESET)	//判断通道4传输完成
-		//		{
-		//			DMA_ClearFlag(DMA1_FLAG_TC4);//清除通道4传输完成标志
-		//			USART1_DAM_DONE = 1;
-		//		}
-	}
+    /******************************************/
+    address.Byte[0] = address1;
+    address.Byte[1] = address2;
+    Board_init();
+    SYS_CLK.SENDCLK = 200; //发送频率 ×10ms一次
+    /**********************************************/
+    while (1)
+    {
+        filter(); //得出AD平均值
+        IWDG_Feed();
+        if (SYS_Flag.SEND_flag == 1)
+        {
+            SYS_Flag.SEND_flag = 0;
+        }
+        //		if(SYS_Flag.SEND_flag == 1)
+        //		{
+        //			USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE); //使能串口1的DMA发送
+        //			MYDMA_Enable(DMA1_Channel4);//开始一次DMA传输！
+        //			USART1_DAM_DONE = 0;
+        //			SYS_Flag.SEND_flag = 0;
+        //		}
+        //		if(DMA_GetFlagStatus(DMA1_FLAG_TC4)!=RESET)	//判断通道4传输完成
+        //		{
+        //			DMA_ClearFlag(DMA1_FLAG_TC4);//清除通道4传输完成标志
+        //			USART1_DAM_DONE = 1;
+        //		}
+    }
 }
